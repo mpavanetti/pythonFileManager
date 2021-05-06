@@ -21,7 +21,7 @@ app.config['UPLOAD_PATH'] = path+inbound
 
 @app.route("/")
 def index():
-    return "<h1>Forbidden !</h1><br><hr><h3>This Webpage can not be accessed.</h3><br><span>Talend Admin.</span>"
+    return render_template('exception.html')
 
 @app.route('/upload')
 def upload_file_index():
