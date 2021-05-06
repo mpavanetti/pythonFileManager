@@ -9,9 +9,9 @@ from flask import Flask, render_template, request, redirect, url_for, abort, jso
 from werkzeug.utils import secure_filename
 
 # Declaring Variables
-path = "\\\\RSPINDFS01.hgvc.com/corp/ITdata/MDW/"
-extension = "*.csv"
+path = "\\\\RSPINDFS01.hgvc.com/corp/"
 inbound ="input\//"
+extension = "*.csv"
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024
@@ -25,9 +25,26 @@ def index():
 @app.route("/listfiles", methods=["GET"])
 def list_files():
     try:
-        files = [os.path.basename(x) for x in glob.glob(path + extension)]
-        return str(files)
+        # Reading Header Values
+        inputpath = request.headers.get('path')
+        filepath = path + inputpath
+        filemask = request.headers.get('filemask')
+
+        # Check path and filemask header values
+        if(inputpath != None and inputpath.strip() != ''):
+            if(filemask != None and filemask.strip() != ''):
+                # Iterating and storing files to variable
+                files = [os.path.basename(x) for x in glob.glob(filepath + filemask)]
+                # Return files (String)
+                return str(files)
+            else:
+                return "No Input filemask. please provide the header name filemask with value."    
+        else:
+            return "No Input file path. please provide the header name path with value."
+
     except:
+
+        # Exception, Return HTML Exception template.
         return "<h1>Exception ALL</h1><br><hr><h3>Some Error Has Occured.</h3>"
 
 @app.route("/getfile/<string:filename>", methods=["GET"])
