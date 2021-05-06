@@ -154,6 +154,35 @@ def move_files():
        # Exception, Return HTML Exception template.
        return ('<h1>Exception ALL</h1><br><hr><h3>Some Error Has Occured.</h3>',500)
 
+# App route /renamefile PUT Method call
+@app.route('/renamefile', methods=['PUT'])
+def rename_file():
+    try:
+        # Reading Header Values
+        sourceFile = request.headers.get('sourceFile')
+        sourceFilePath = path + sourceFile
+        targetFile = request.headers.get('targetFile')
+        targetFilePath = path + targetFile
+
+        # Check for header parameters
+        if(sourceFile != None and sourceFile.strip() != ''):
+            if(targetFile != None and targetFile.strip() != ''):
+                # Check if the Source file exist
+                if(os.path.exists(sourceFilePath)):
+                    # Rename File using suthil move method    
+                    shutil.move(sourceFilePath,targetFilePath)
+                    return 'success' 
+                else:
+                    return 'No File Exist',400
+            else:
+             return ('No Target File Path, please input on header the targetPath name and value',400)   
+        else:
+            return ('No Source File Path, please input on header the sourcePath name and value',400)
+        
+    except:
+       # Exception, Return HTML Exception template.
+       return ('<h1>Exception ALL</h1><br><hr><h3>Some Error Has Occured.</h3>',500)
+
 # Checks to see if the name of the package is the run as the main package.
 if __name__ == "__main__":
     # Runs the Flask application only if the main.py file is being run.
