@@ -1,4 +1,6 @@
-#main.py
+# Create by Matheus Pavanetti (matheus.pavanetti@hgv.com)
+# Release 1.0.2 - Last Update Date 5/6/2021
+
 #pip3 install flask
 #pip3 --trusted-host=pypi.python.org --trusted-host=pypi.org --trusted-host=files.pythonhosted.org install flask (In case of SSL Problem)
 
@@ -13,12 +15,15 @@ app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 10000000000 # MAX 10 GB
 app.config['UPLOAD_EXTENSIONS'] = ['.csv','.txt','.xlsx','.xls','.json','.xml','.zip','.sql','.ds','.doc','.docx']
 
+# path variable, using network file share location.
 path = "\\\\RSPINDFS01.hgvc.com/corp/"
 
+# App Route, Root , deny access
 @app.route("/")
 def index():
     return render_template('exception.html')
 
+# App Route /listfiles GET Method, get file name from folder.
 @app.route("/listfiles", methods=["GET"])
 def list_files():
     try:
@@ -42,6 +47,7 @@ def list_files():
         # Exception, Return HTML Exception template.
         return ('<h1>Exception ALL</h1><br><hr><h3>Some Error Has Occured.</h3>',500)
 
+# App route /getfile/file.txt GET method call
 @app.route("/getfile/<string:filename>", methods=["GET"])
 def get_files(filename):
     try:
@@ -80,6 +86,7 @@ def get_files(filename):
         # Exception, Return HTML Exception template.
         return ('<h1>Exception ALL</h1><br><hr><h3>Some Error Has Occured.</h3>',500)
 
+# App route /sendfile POST Method call
 @app.route('/sendfile', methods=['POST'])
 def upload_files():
     try:
@@ -107,6 +114,7 @@ def upload_files():
              return ('No Input file path. please provide the header name path with value.',400)
 
     except:
+       # Exception, Return HTML Exception template.
        return ('<h1>Exception ALL</h1><br><hr><h3>Some Error Has Occured.</h3>',500)
      
 # Checks to see if the name of the package is the run as the main package.
