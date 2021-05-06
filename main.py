@@ -78,7 +78,7 @@ def new_user():
     user.hash_password(password)
     db.session.add(user)
     db.session.commit()
-    return (jsonify({'username': user.username},{'status':'User has successfully created in database.'}), 201,
+    return (jsonify({'username': user.username},{'status':'User has been successfully created in database.'}), 201,
             {'Location': url_for('get_user', id=user.id, _external=True)})
 
 # App List Users
