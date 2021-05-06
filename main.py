@@ -183,6 +183,30 @@ def rename_file():
        # Exception, Return HTML Exception template.
        return ('<h1>Exception ALL</h1><br><hr><h3>Some Error Has Occured.</h3>',500)
 
+# App route /deletefile PUT Method call
+@app.route('/deletefile', methods=['DELETE'])
+def delete_file():
+    try:
+        # Reading Header Values
+        file = request.headers.get('file')
+        filePath = path + file
+
+        # Check for header parameters
+        if(file != None and file.strip() != ''):
+                # Check if the Source file exist
+                if(os.path.exists(filePath)):
+                    # Rename File using suthil move method    
+                    os.remove(filePath)
+                    return 'success' 
+                else:
+                    return 'No File Exist',400 
+        else:
+            return ('No Source File Path, please input on header the sourcePath name and value',400)
+        
+    except:
+       # Exception, Return HTML Exception template.
+       return ('<h1>Exception ALL</h1><br><hr><h3>Some Error Has Occured.</h3>',500)
+
 # Checks to see if the name of the package is the run as the main package.
 if __name__ == "__main__":
     # Runs the Flask application only if the main.py file is being run.
