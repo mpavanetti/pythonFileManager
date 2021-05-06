@@ -9,13 +9,11 @@ from flask import Flask, render_template, request, redirect, url_for, abort, jso
 from werkzeug.utils import secure_filename
 
 # Declaring Variables
-path = "\\\\RSPINDFS01.hgvc.com/corp/"
-inbound ="input\//"
-
 app = Flask(__name__)
-app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024
-app.config['UPLOAD_EXTENSIONS'] = ['.csv','.txt']
-app.config['UPLOAD_PATH'] = path+inbound
+app.config['MAX_CONTENT_LENGTH'] = 10000000000 # MAX 10 GB
+app.config['UPLOAD_EXTENSIONS'] = ['.csv','.txt','.xlsx','.xls','.json','.xml','.zip','.sql','.ds','.doc','.docx']
+
+path = "\\\\RSPINDFS01.hgvc.com/corp/"
 
 @app.route("/")
 def index():
@@ -42,7 +40,7 @@ def list_files():
             return ('No Input file path. please provide the header name path with value.',400)
     except:
         # Exception, Return HTML Exception template.
-        return ('<h1>Exception ALL</h1><br><hr><h3>Some Error Has Occured.</h3>',400)
+        return ('<h1>Exception ALL</h1><br><hr><h3>Some Error Has Occured.</h3>',500)
 
 @app.route("/getfile/<string:filename>", methods=["GET"])
 def get_files(filename):
@@ -80,21 +78,36 @@ def get_files(filename):
             return ('No inputfilename. please provide the filename to query it.',400)
     except:
         # Exception, Return HTML Exception template.
-        return ('<h1>Exception ALL</h1><br><hr><h3>Some Error Has Occured.</h3>',400)
+        return ('<h1>Exception ALL</h1><br><hr><h3>Some Error Has Occured.</h3>',500)
 
 @app.route('/sendfile', methods=['POST'])
 def upload_files():
     try:
-        uploaded_file = request.files['file']
-        filename = secure_filename(uploaded_file.filename)
-        if filename != '':
-            file_ext = os.path.splitext(filename)[1]
-            if file_ext not in app.config['UPLOAD_EXTENSIONS']:
-               abort(400)
-            uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
-        return "success"
+        # Reading Header Values
+        inputpath = request.headers.get('path')
+        filepath = path + inputpath
+      
+        # Check for header parameters
+        if(inputpath != None and inputpath.strip() != ''):
+
+        # Declare app config
+            app.config['UPLOAD_PATH'] = filepath
+
+        # Get uploaded file
+            uploaded_file = request.files['file']
+            filename = secure_filename(uploaded_file.filename)
+            if filename.strip() != '':
+                file_ext = os.path.splitext(filename)[1]
+                if file_ext not in app.config['UPLOAD_EXTENSIONS']:
+                    abort(400)
+                uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
+            return "success"
+                    
+        else:
+             return ('No Input file path. please provide the header name path with value.',400)
+
     except:
-       return "<h1>Exception ALL</h1><br><hr><h3>Some Error Has Occured.</h3>",400
+       return ('<h1>Exception ALL</h1><br><hr><h3>Some Error Has Occured.</h3>',500)
      
 # Checks to see if the name of the package is the run as the main package.
 if __name__ == "__main__":
