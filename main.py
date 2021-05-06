@@ -9,7 +9,6 @@ from flask import Flask, render_template, request, redirect, url_for, abort, jso
 from werkzeug.utils import secure_filename
 
 # Declaring Variables
-#path = "C:\py\//"
 path = "\\\\RSPINDFS01.hgvc.com/corp/ITdata/MDW/"
 extension = "*.csv"
 inbound ="input\//"
@@ -22,10 +21,6 @@ app.config['UPLOAD_PATH'] = path+inbound
 @app.route("/")
 def index():
     return render_template('exception.html')
-
-@app.route('/upload')
-def upload_file_index():
-   return render_template('F:/upload.html')
 
 @app.route("/listfiles", methods=["GET"])
 def list_files():
