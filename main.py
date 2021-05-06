@@ -11,7 +11,6 @@ from werkzeug.utils import secure_filename
 # Declaring Variables
 path = "\\\\RSPINDFS01.hgvc.com/corp/"
 inbound ="input\//"
-extension = "*.csv"
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024
@@ -38,37 +37,50 @@ def list_files():
                 # Return files (String)
                 return str(files)
             else:
-                return "No Input filemask. please provide the header name filemask with value."    
+                return ('No Input filemask. please provide the header name filemask with value.',400)
         else:
-            return "No Input file path. please provide the header name path with value."
-
+            return ('No Input file path. please provide the header name path with value.',400)
     except:
-
         # Exception, Return HTML Exception template.
-        return "<h1>Exception ALL</h1><br><hr><h3>Some Error Has Occured.</h3>"
+        return ('<h1>Exception ALL</h1><br><hr><h3>Some Error Has Occured.</h3>',400)
 
 @app.route("/getfile/<string:filename>", methods=["GET"])
 def get_files(filename):
     try:
+        # Reading Header Values
+        inputpath = request.headers.get('path')
+        filepath = path + inputpath
+        filemask = request.headers.get('filemask')
         foundFile =[]
-        files = [os.path.basename(x) for x in glob.glob(path + extension)]
-        if(filename == "" or filename == " "):
-                result = "No File Found, type a valid fileName."
-        else:
-            for i in files:
-                if(i == filename):
-                    foundFile.append(i)
-            if(foundFile):
-                if(foundFile[0] != ''):
-                    f = open(path+foundFile[0], 'r',encoding='iso-8859-1')
-                    final = f.read()
+
+        # Check path and filemask header values
+        if(filename.strip() != ''):
+            if(inputpath != None and inputpath.strip() != ''):
+                if(filemask != None and filemask.strip() != ''):
+                    # Iterating and storing files to variable.
+                    files = [os.path.basename(x) for x in glob.glob(filepath + filemask)]
+                    # Iterating on files to check if the input filename match with the files found in the folder.
+                    for i in files:
+                        if(i == filename):
+                            foundFile.append(i)
+                    if(foundFile):
+                        if(foundFile[0] != ''):
+                            f = open(filepath+foundFile[0], 'r',encoding='iso-8859-1')
+                            final = f.read()
+                        else:
+                            final = "No File Found"
+                    else:
+                        final = "No File Found"
+                    return final
                 else:
-                    final = "No File Found"
+                    return ('No Input filemask. please provide the header name filemask with value.',400)    
             else:
-                final = "No File Found"
-            return final
+                return ('No Input file path. please provide the header name path with value.',400)
+        else:
+            return ('No inputfilename. please provide the filename to query it.',400)
     except:
-        return "<h1>Exception ALL</h1><br><hr><h3>Some Error Has Occured.</h3>"
+        # Exception, Return HTML Exception template.
+        return ('<h1>Exception ALL</h1><br><hr><h3>Some Error Has Occured.</h3>',400)
 
 @app.route('/sendfile', methods=['POST'])
 def upload_files():
