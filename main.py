@@ -7,6 +7,7 @@
 # Import modules
 import os
 import glob
+import shutil
 from flask import Flask, render_template, request, redirect, url_for, abort, jsonify
 from werkzeug.utils import secure_filename
 
@@ -116,7 +117,43 @@ def upload_files():
     except:
        # Exception, Return HTML Exception template.
        return ('<h1>Exception ALL</h1><br><hr><h3>Some Error Has Occured.</h3>',500)
-     
+
+# App route /movefiles POST Method call
+@app.route('/movefiles', methods=['POST'])
+def move_files():
+    try:
+         # Reading Header Values
+        sourcePath = request.headers.get('sourcePath')
+        sourceFilePath = path + sourcePath
+        targetPath = request.headers.get('targetPath')
+        targetFilePath = path + targetPath
+        filemask = request.headers.get('filemask')
+
+        # Check for header parameters
+        if(sourcePath != None and sourcePath.strip() != ''):
+            if(targetPath != None and targetPath.strip() != ''):
+                if(filemask != None and filemask.strip() != ''):
+
+                    files = [os.path.basename(x) for x in glob.glob(sourceFilePath + filemask)]
+                    for i in files:
+                        original =  sourceFilePath + i
+                        target =  targetFilePath + i
+                        print("original"+original)
+                        print("target"+target)
+                        shutil.move(original,target)
+
+                    return 'success'
+                else:
+                 return ('No filemask, please input on header the filemask name and value',400)   
+            else:
+             return ('No Target File Path, please input on header the targetPath name and value',400)   
+        else:
+            return ('No Source File Path, please input on header the sourcePath name and value',400)
+        
+    except:
+       # Exception, Return HTML Exception template.
+       return ('<h1>Exception ALL</h1><br><hr><h3>Some Error Has Occured.</h3>',500)
+
 # Checks to see if the name of the package is the run as the main package.
 if __name__ == "__main__":
     # Runs the Flask application only if the main.py file is being run.
