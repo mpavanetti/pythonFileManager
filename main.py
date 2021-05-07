@@ -1,5 +1,5 @@
 # Create by Matheus Pavanetti (matheus.pavanetti@hgv.com)
-# Release 1.0.3 - Last Update Date 5/6/2021
+# Release 1.0.4 - Last Update Date 5/7/2021
 
 # Import modules
 import os
