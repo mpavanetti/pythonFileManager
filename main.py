@@ -229,10 +229,42 @@ def move_files():
                     for i in files:
                         original =  sourceFilePath + i
                         target =  targetFilePath + i
-                        print("original"+original)
-                        print("target"+target)
                         shutil.move(original,target)
 
+                    return 'success'
+                else:
+                 return ('No filemask, please input on header the filemask name and value',400)   
+            else:
+             return ('No Target File Path, please input on header the targetPath name and value',400)   
+        else:
+            return ('No Source File Path, please input on header the sourcePath name and value',400)
+        
+    except:
+       # Exception, Return HTML Exception template.
+       return ('<h1>Exception ALL</h1><br><hr><h3>Some Error Has Occured.</h3>',500)
+
+# App route /copyfiles POST Method call
+@app.route('/copyfiles', methods=['POST'])
+@auth.login_required
+def copy_files():
+    try:
+         # Reading Header Values
+        sourcePath = request.headers.get('sourcePath')
+        sourceFilePath = path + sourcePath
+        targetPath = request.headers.get('targetPath')
+        targetFilePath = path + targetPath
+        filemask = request.headers.get('filemask')
+
+        # Check for header parameters
+        if(sourcePath != None and sourcePath.strip() != ''):
+            if(targetPath != None and targetPath.strip() != ''):
+                if(filemask != None and filemask.strip() != ''):
+
+                    files = [os.path.basename(x) for x in glob.glob(sourceFilePath + filemask)]
+                    for i in files:
+                        original =  sourceFilePath + i
+                        target =  targetFilePath + i
+                        shutil.copyfile(original,target)
                     return 'success'
                 else:
                  return ('No filemask, please input on header the filemask name and value',400)   
