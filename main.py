@@ -19,7 +19,7 @@ app.config['SECRET_KEY'] = 'lazy fox'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['MAX_CONTENT_LENGTH'] = 10000000000 # MAX 10 GB
-app.config['UPLOAD_EXTENSIONS'] = ['.csv','.txt','.xlsx','.xls','.json','.xml','.zip','.sql','.ds','.doc','.docx']
+app.config['UPLOAD_EXTENSIONS'] = ['.csv','.txt','.xlsx','.xls','.json','.xml','.zip','.sql','.ds','.doc','.docx','.dat','.bin','.data','.tmp']
 
 # extensions
 db = SQLAlchemy(app)
