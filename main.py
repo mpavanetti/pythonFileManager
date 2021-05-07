@@ -15,7 +15,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 # Declaring Variables
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'lazy fox'
+app.config['SECRET_KEY'] = 'The lazy fox has jumped in the river'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['MAX_CONTENT_LENGTH'] = 10000000000 # MAX 10 GB
