@@ -1,4 +1,4 @@
-# Create by Matheus Pavanetti (matheus.pavanetti@hgv.com)
+# Create by Matheus Pavanetti (matheuspavanetti@gmail.com)
 # Release 1.0.4 - Last Update Date 5/7/2021
 
 # Import modules
@@ -103,7 +103,7 @@ def get_resource():
     return jsonify({'data': 'Hello, %s!' % g.user.username})
 
 # path variable, using network file share location.
-path = "\\\\RSPINDFS01.hgvc.com/corp/"
+path = "C:/Python/Share/"
 
 # App Route, Root , deny access
 @app.route("/")
